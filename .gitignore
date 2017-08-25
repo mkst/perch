@@ -1,0 +1,5 @@
+# ignore q binaries
+q
+q.exe
+# ignore compiled files
+*.so
