@@ -1,8 +1,8 @@
 \d .fix
 
 //--------------------------------------
-PROTOCOL:"8=FIX.4.4\001";
-HEARTBEAT_INTERVAL:0D00:00:30; // default to 30 seconds
+PROTOCOL:"8=FIX.4.4\001";              / default to FIX.4.4
+HEARTBEAT_INTERVAL:`second$30;         / default to 30 seconds
 SenderCompID:"CLIENT";
 TargetCompID:"SERVER";
 
@@ -26,7 +26,7 @@ SetSeqNumOut:{
 // Heatbeat/TestRequest handling
 //--------------------------------------
 HeartBeatCheckClient:{[]
-  now:.z.p;
+  now:.timer.GetTimestamp[];
   if[IsLoggedOn and now>lastSentTime+HEARTBEAT_INTERVAL;
     `..Send.HEARTBEAT map ()
     ];
@@ -35,7 +35,7 @@ HeartBeatCheckClient:{[]
 // Note: disconnect if no messages received for 60 seconds
 TestRequestPending:0b;
 HeartBeatCheckServer:{[]
-  now:.z.p;
+  now:.timer.GetTimestamp[];
   if[IsLoggedOn and now>lastReceivedTime+HEARTBEAT_INTERVAL;
     // if they have not send anything for 2*heartbeat interval then disconnect
     if[.z.p>lastReceivedTime+2*HEARTBEAT_INTERVAL;

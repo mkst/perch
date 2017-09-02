@@ -11,17 +11,19 @@ addChecksum:{x,"10=",checksum[x],"\001"};
 bodylength:{string count x};
 addBodylength:{ "9=",bodylength[x],"\001",x };
 
+// split message on tag
+split:{(w cut key x)!(w:where y=key x) cut value x};
+
 // pull out chars we want, then replace the D for a -
 fixTs:{@[string[x] 0 1 2 3 5 6 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22;8;:;"-"]};
 
-// to allow for replaying
-now:{.z.p};
-
 buildHeader:{[MSGTYPE]
-  (35 34 49 56 52h)!(MSGTYPE;SeqNumOut;SenderCompID;TargetCompID;fixTs now[]) };
+  (35 34 49 56 52h)!(MSGTYPE;SeqNumOut;SenderCompID;TargetCompID;fixTs .timer.GetTimestamp[])
+  };
 
 buildMessage:{[MSG;MSGTYPE]
-  addChecksum[PROTOCOL,addBodylength[encode[buildHeader[MSGTYPE],MSG]]] };
+  addChecksum[PROTOCOL,addBodylength[encode[buildHeader[MSGTYPE],MSG]]]
+  };
 
 \d .
 

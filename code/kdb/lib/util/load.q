@@ -5,9 +5,13 @@ makepath:{[PATH]
   `$":",getenv[`KDB_HOME],"/",$[":"~(s:string[PATH]) 0;1_s;s]
   };
 
+CfgPath:{[PATH]
+  `$":",getenv[`CFG_HOME],"/",$[":"~(s:$[10h=type PATH;PATH;string[PATH]]) 0;1_s;s]
+  };
+
 LoadLib:{[LIB;FUNC;PARAMETERS]
   path:.Q.dd[`$":",getenv[`C_HOME];(`lib;LIB;.z.o;LIB)];
-  .log.Ldn (path;FUNC);
+  .log.Ldn ("Lib:";(last "/" vs string path);"::";FUNC;"(";PARAMETERS;")");
   path 2:(FUNC;PARAMETERS)
   };
 

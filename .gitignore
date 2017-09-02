@@ -3,3 +3,5 @@ q
 q.exe
 # ignore compiled files
 *.so
+# ignore config directory
+config/

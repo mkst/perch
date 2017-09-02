@@ -2,20 +2,23 @@
 
 id:0;
 
-Timers:`id xkey flip `id`interval`nextRun`function!"jpn*"$/:();
+Timers:`id xkey flip `id`interval`nextRun`function!"jpn*"$\:();
 
 //triggers immediately
 Add:{[FUNC;INTERVAL]
   Timers[id]:(INTERVAL;.z.p;FUNC);
   oid:id;
   id+::1;
-  // return id of added job
-  oid
-  }
+  oid                                  // return id of added job
+  };
 
 execJob:{[FUNC]
-  (value FUNC) `
-  }
+  (value FUNC) `                       // execute function with no args
+  };
+
+GetTimestamp:{[]
+  .z.p                                 // return now, allows mocking
+  };
 
 \d .
 

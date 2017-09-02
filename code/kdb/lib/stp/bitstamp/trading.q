@@ -1,6 +1,7 @@
+.util.Load `:lib/stp/bitstamp/common.q;
+
 SendOrder:{[ORDER]
-  // insert "/"
-  sym:{ (3#x),"/",-3#x } string ORDER[`Symbol];
+  sym:{ (3#x),"/",-3#x } string ORDER[`Symbol]; // add "/"
   // build message
   msg:map(11h;ORDER[`ClientOrderID];            // ClOrdId
           55h;sym ;                             // Symbol
@@ -59,7 +60,7 @@ On.EXECUTION_REPORT:{[ER]
 
   if["4"~execType;
     // cancelled
-    msg[`Status]:`Cancelled; // note two l's in cancelled
+    msg[`Status]:`Cancelled;                    // note two l's in cancelled
     :();
     ];
 
