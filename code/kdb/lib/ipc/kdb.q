@@ -9,7 +9,7 @@ pub:{[MSG]
   };
 
 sub:{[]
-  subscribers,::.z.pw;                 // add subcriber
+  subscribers,::.z.w;                  // add subcriber
   };
 
 .z.pc:{[H]

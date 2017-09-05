@@ -12,7 +12,7 @@ bodylength:{string count x};
 addBodylength:{ "9=",bodylength[x],"\001",x };
 
 // split message on tag
-split:{(w cut key x)!(w:where y=key x) cut value x};
+split:{(w cut key x)!'(w:where y=key x) cut value x};
 
 // pull out chars we want, then replace the D for a -
 fixTs:{@[string[x] 0 1 2 3 5 6 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22;8;:;"-"]};
