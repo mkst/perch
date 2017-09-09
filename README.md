@@ -5,7 +5,8 @@ _"...Look on my works, ye mighty, and despair!"_
 
 ## TODO
 
- - [ ] book builder (convert quotes into books)
+ - [x] book builder (convert quotes into books)
+ - [ ] subscribers reconnect on disconnect
  - [ ] pool builder (aggregate books into pools)
  - [ ] order manager
  - [ ] HTML5 front-end for order manager
@@ -14,11 +15,16 @@ _"...Look on my works, ye mighty, and despair!"_
 ## Tutorial
 
 **Setup environment/paths**
+
     source scripts/env.sh
 
-**Start up publisher**
+**Start up dummy quote publisher (on port 5001)**
 
-    q32 code/kdb/test/publisher.q
+    q32 code/kdb/test/publisher.q -p 5001
+
+**Start up bookbuilder**
+
+    q32 code/kdb/procs/bookbuilder_init.q -config config/examples/bookbuilder.q
 
 **Start up logger**
 

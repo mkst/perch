@@ -14,7 +14,9 @@ publish:{[]
   Quote::0#Quote;
   };
 
-PORT:12345;
-.log.Inf ("Listening on port";PORT);
-system "p ",string PORT;
+PORT:5001;
+if[not PORT=system "p";
+  .log.Inf ("Listening on default port:";PORT);
+  system "p ",string PORT;
+  ];
 .timer.Add[`publish;0D00:00:01];       / publish every second

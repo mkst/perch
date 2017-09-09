@@ -1,7 +1,7 @@
 # ignore q binaries
-q
-q.exe
+kx/*/l32/q
+kx/*/w32/q.exe
 # ignore compiled files
 *.so
-# ignore config directory
-config/
+# ignore prod config directory
+config/prod

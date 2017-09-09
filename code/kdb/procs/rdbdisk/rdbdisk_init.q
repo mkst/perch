@@ -23,8 +23,9 @@ init:{[ARGS]
     exit 1
   ];
   .cfg.LoadConfig `$":",first opts`config;
-  LOGPATH::`$":",.cfg.Config.LogPath;
-  { hopen[x] ".ipc.sub[]" } each "J"$ "," vs .cfg.Config.Subscriptions;
+  system "p ",.cfg.Config.ListenPort;  / start listening
+  LOGPATH::`$":",.cfg.Config.LogPath;  / set LOGPATH
+  .ipc.subscribe each "J"$ "," vs .cfg.Config.Subscriptions;
   };
 
 if[`rdbdisk_init.q=last `$"/" vs string .z.f;init[.z.x]];
