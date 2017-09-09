@@ -23,13 +23,13 @@ HANDLE:0Ni;                            / initialise as null integer
 
 init:{[ARGS]
   opts::.Q.opt ARGS;
-  if[not all `config`port in key opts;
-    .log.Err "logger_init.q -config <> -port <>";
+  if[not `config in key opts;
+    .log.Err "logger_init.q -config <path/to/config.cfg>";
     exit 1
   ];
   .cfg.LoadConfig `$":",first opts`config;
   LOGPATH::`$":",.cfg.Config.LogPath;
   { hopen[x] ".ipc.sub[]" } each "J"$ "," vs .cfg.Config.Subscriptions;
-  }
+  };
 
 if[`logger_init.q=last `$"/" vs string .z.f;init[.z.x]];
