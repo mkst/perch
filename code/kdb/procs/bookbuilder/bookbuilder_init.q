@@ -20,7 +20,7 @@ processQuote:{[SYM;EXCH;QUOTE]
         lastquote[EXCH;SYM]:update qty:lastqty-qty, time:QUOTE[`time] from lastquote[EXCH;SYM] where side=QUOTE[`side],price=QUOTE[`price] / update entry
       ];
       lastquote[EXCH;SYM]:update qty:qty,time:QUOTE[`time] from lastquote[EXCH;SYM] where side=QUOTE[`side],price=QUOTE[`price] / pure update
-    ];
+    ]
   };
 
 processQuotes:{[QUOTES]
@@ -50,7 +50,7 @@ processQuotes:{[QUOTES]
   if[not `Quote=TABLE; / FIXME: only subscribe to Quote updates?
     :()
     ];
-  processQuotes each (where differ DATA[`sym`exch]) cut DATA / ?
+  processQuotes each (where differ DATA[`time]) cut DATA / TODO: is cut required?
   };
 
 init:{[ARGS]
@@ -61,7 +61,7 @@ init:{[ARGS]
   ];
   .cfg.LoadConfig `$":",first opts`config;
   system "p ",.cfg.Config.ListenPort;
-  .ipc.subscribe each "J"$ "," vs .cfg.Config.Subscriptions;
+  .ipc.subscribe each `$ "," vs .cfg.Config.Subscriptions;
   };
 
 if[`bookbuilder_init.q=last `$"/" vs string .z.f;init[.z.x]];

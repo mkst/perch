@@ -12,7 +12,7 @@ MAXROWS:1000;                          / write to disk once MAXROWS exceeded
       @[`.;TABLE;0#];                  / clear table
       ];
     ];
-    TABLE set DATA                     / new table
+    TABLE set $[99h=type DATA;enlist DATA;DATA] / new table
     ];
   };
 
@@ -25,7 +25,7 @@ init:{[ARGS]
   .cfg.LoadConfig `$":",first opts`config;
   system "p ",.cfg.Config.ListenPort;  / start listening
   LOGPATH::`$":",.cfg.Config.LogPath;  / set LOGPATH
-  .ipc.subscribe each "J"$ "," vs .cfg.Config.Subscriptions;
+  .ipc.subscribe each `$ "," vs .cfg.Config.Subscriptions;
   };
 
 if[`rdbdisk_init.q=last `$"/" vs string .z.f;init[.z.x]];

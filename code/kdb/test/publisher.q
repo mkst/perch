@@ -8,7 +8,8 @@ exchs:`BITS`KRKN`MTGX;
 
 publish:{[]
   n:100;
-  `Quote upsert flip (n#.z.p;n#.z.p+1000;n?syms;n#1?exchs;n?"BS";n?1f;n?1000f;n?"NDU";n?01b);
+  exch:1?exchs; / pick a single exchange per call
+  `Quote upsert flip (n#.z.p;n#.z.p+1000;n?syms;n#exch;n?"BS";n?1f;n?1000f;n?"NDU";n?01b);
   .log.Inf ("Publishing";count Quote;"records");
   {.ipc.pub (`Quote;Quote where Quote[`sym] = x) } each exec distinct sym from Quote;
   Quote::0#Quote;

@@ -1,6 +1,8 @@
 
 \d .util
 
+loaded:()!();
+
 makepath:{[PATH]
   `$":",getenv[`KDB_HOME],"/",$[":"~(s:string[PATH]) 0;1_s;s]
   };
@@ -22,8 +24,18 @@ LoadDir:{[PATH]
 Load:{[PATH]
   .util.lastLoadedPath:PATH;
   path:$["/"~string[PATH] 1;PATH;makepath PATH];
-  system "l ",1_string path;           // use system l to load path
-  :.log.Ldn path;                      // return loaded path
+  if[()~key path;
+    '"file_not_found"];                / sanity check
+  fileMD5:md5 raze read0 path;         / get md5 sum of file
+  if[path in key loaded;               / file is already known
+    if[loaded[path]~fileMD5;           / md5 matches loaded file
+      .log.Ldn (path;"already loaded...");
+      :()                              / early return
+      ];
+    ];
+  system "l ",1_string path;           / use system l to load path
+  loaded[path]:fileMD5;                / add file to list of loaded files
+  :.log.Ldn path;                      / return loaded path
   };
 \d .
 

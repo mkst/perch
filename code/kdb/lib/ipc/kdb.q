@@ -17,7 +17,6 @@ sub:{[]                                // TODO restrict subscription to sym/exch
   };
 
 .z.pc:{[H]
-  .log.Inf (`.z.pc;H);
   if[H in subscribers;
     subscribers::subscribers except H;   // remove subscriber
     :()
@@ -28,15 +27,31 @@ sub:{[]                                // TODO restrict subscription to sym/exch
     ];
   };
 
-subscribe:{[S]                         // called by clients
+trySubscribe:{[S]
   h:@[hopen;S;0Ni];                    // open handle to S(erver)
-  if[not null h;                       // check handle is not null
-    if[@[h;(`.ipc.sub;`);0b];          // call subscribe
-      connections[`$string S]:(h;1b);  // mark connection as connected
-      :1b;                             // return true
-      ];
+  if[null h;
+    :(0Ni;0b);                         // connection failed
     ];
-    :0b;                               // return false
+  if[@[h;(`.ipc.sub;`);0b];            // call subscribe
+    :(h;1b);                           // connection suceeded
+    ];
+  @[hclose;h;0b];                      // close handle
+  :(0Ni;0b);                           // connection *was* successful, but failed to subscribe
+  };
+
+subscribe:{[S]                         // called by clients
+  res:trySubscribe S;
+  .ipc.connections[`$string S]:(res);  // update connections table
+  last res                             // return success
+  };
+
+reconnect:{[]
+  {
+    res:.ipc.subscribe x;
+    .log.Inf ("Reconnect to";x;"was";$[res;"successful";"unsuccessful"])
+  } each exec server from .ipc.connections where not connected
   };
 
 \d .
+
+.timer.Add[`.ipc.reconnect;0D00:00:10]; // attempt to reconnect every 10 seconds

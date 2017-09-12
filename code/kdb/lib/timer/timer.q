@@ -22,7 +22,6 @@ GetTimestamp:{[]
   (value FUNC) `                       // execute function with no args
   };
 
-system "t 100" // 100ms precision
 .z.ts:{
   jobs:select from .timer.Timers where nextRun <= .z.p;
   if[count jobs;
@@ -30,3 +29,5 @@ system "t 100" // 100ms precision
     update nextRun:.z.p+interval from `.timer.Timers where id in exec id from jobs
     ];
   };
+
+system "t 100" // 100ms precision
