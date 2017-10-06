@@ -3,7 +3,7 @@
 snapshot:{[SNAP]
   price:"F"$SNAP`270;                          / MDEntryPx (cast price to float)
   qty:"F"$SNAP`271;                            / MDEntrySize (cast to float)
-  side:(-1 1)"H"$SNAP`269;                     / MDEntryType 0 = Bid, 1 = Offer
+  side:"BS""H"$SNAP`269;                       / MDEntryType 0 = B = Bid, 1 = S = Offer
   `side`price`qty!(side;price;qty)             / return side, price, qty
   };
 
@@ -15,7 +15,7 @@ increment:{[INCR]
   date:INCR`272;                               / MDEntryDate
   time:INCR`273;                               / MDEntryTime
   datetime:"P"$date," ",time;                  / cast date and time to datetime
-  `timeExch`sym`side`price`qty`id!(datetime;sym;0;price;qty;id)
+  `timeExch`sym`side`price`qty`id!(datetime;sym;"X";price;qty;id)
   };
 
 / used for pricebook
