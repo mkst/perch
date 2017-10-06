@@ -36,7 +36,7 @@ K1(k_send)
 
     while (to_send > 0)                // loop until everything has been sent
     {
-      sent = send(sockfd, kC(x) + sent, to_send, 0);  // might not send everything
+      sent = send(sockfd, kC(x) + total_sent, to_send, 0);  // might not send everything
       total_sent += sent;              // increment total sent
       if (sent < 1) R kj(-1);          // TODO: add some error handling here
       to_send -= sent;                 // decrement to_send counter
