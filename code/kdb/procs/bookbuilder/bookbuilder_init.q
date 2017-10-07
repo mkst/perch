@@ -8,18 +8,23 @@ lastquote:()!();
 
 processQuote:{[SYM;EXCH;QUOTE]
   .last.quote:QUOTE;
-  .last.lastquote:lastquote[EXCH;SYM];
+  /==========================================================
   action:QUOTE[`action];
-  qty:QUOTE[`qty];
-  lastqty:exec first qty from lastquote[EXCH;SYM];
+  qqty:QUOTE[`qty];
+  qprice:QUOTE[`price];
+  qside:QUOTE[`side];
+  qtime:QUOTE[`time];
+  /==========================================================
+  lastqty:exec first qty from lastquote[EXCH;SYM] where price=qprice,side=qside;                             / cannot rely on uncrossed book
+  /==========================================================
   $["N"=action;
-    lastquote[EXCH;SYM],:`side`price`qty`time!(QUOTE[`side];QUOTE[`price];qty+0^lastqty;QUOTE[`time]);   / add new entry
+    lastquote[EXCH;SYM],:`side`price`qty`time!(qside;qprice;qqty+0^lastqty;qtime);                           / add new entry
     "D"=action;
-      $[(qty^lastqty)=qty;
-        lastquote[EXCH;SYM]:delete from lastquote[EXCH;SYM] where side=QUOTE[`side],price=QUOTE[`price]; / delete whole entry
-        lastquote[EXCH;SYM]:update qty:lastqty-qty, time:QUOTE[`time] from lastquote[EXCH;SYM] where side=QUOTE[`side],price=QUOTE[`price] / update entry
+      $[(qqty^lastqty)=qqty;
+        lastquote[EXCH;SYM]:delete from lastquote[EXCH;SYM] where side=qside,price=qprice;                   / delete whole entry
+        lastquote[EXCH;SYM],:`side`price`qty`time!(qside;qprice;lastqty-qqty;qtime)                          / update entry
       ];
-      lastquote[EXCH;SYM]:update qty:qty,time:QUOTE[`time] from lastquote[EXCH;SYM] where side=QUOTE[`side],price=QUOTE[`price] / pure update
+      lastquote[EXCH;SYM]:update qty:qqty,time:qtime from lastquote[EXCH;SYM] where side=qside,price=qprice  / pure update
     ]
   };
 
@@ -28,29 +33,32 @@ processQuotes:{[QUOTES]
   snapshot:exec first snapshot from QUOTES;
   sym:exec first sym from QUOTES;
   exch:exec first exch from QUOTES;
+  qtime:exec first time from QUOTES;
+  /==========================================================
   if[not exch in key lastquote;
-    .log.Inf ("initialising lastquote for";exch);
     lastquote[exch]:()!()
     ];
-  if[not sym in key lastquote[exch]; /TODO: speed this up with LUT
+  if[not sym in key lastquote[exch];  / TODO: speed this up with LUT ?
     lastquote[exch;sym]:schema
-  ];
-  if[snapshot;
-    lastquote[exch;sym]:schema         /clear book
     ];
-  processQuote[sym;exch;] each (),delete sym,exch,snapshot from QUOTES;
-  / build bids and asks
-  bids:enlist exec bidpx:price, bidqty:qty, bidtime:time from lastquote[exch;sym] where side="S";
-  asks:enlist exec askpx:price, askqty:qty, asktime:time from lastquote[exch;sym] where side="B";
+  if[snapshot;
+    lastquote[exch;sym]:schema        / clear book on snapshot
+    ];
+  /==========================================================
+  processQuote[sym;exch;] each (),QUOTES;
+  /==========================================================
+  bids:enlist `bidpx`bidqty`bidtime!b[;idesc first b:exec (price;qty;time) from lastquote[exch;sym] where side="B"]; / build bids
+  asks:enlist `askpx`askqty`asktime!a[;iasc  first a:exec (price;qty;time) from lastquote[exch;sym] where side="S"]; / build asks
+  /==========================================================
   / publish book for sym;exch
-  .ipc.pub(`Book;`time`sym`exch xcols update time:.timer.GetTimestamp[], sym:sym, exch:exch from bids,'asks)
+  .ipc.pub(`Book;`time`sym`exch xcols update time:.timer.GetTimestamp[], timeExch:qtime, sym:sym, exch:exch from bids,'asks)
   };
 
 .u.upd:{[TABLE;DATA]
-  if[not `Quote=TABLE; / FIXME: only subscribe to Quote updates?
+  if[not `Quote=TABLE; / TODO: only subscribe to Quote updates?
     :()
     ];
-  processQuotes each (where differ DATA[`time]) cut DATA / TODO: is cut required?
+  processQuotes each (where differ DATA[`time]) cut DATA / cut only required for backtesting
   };
 
 init:{[ARGS]
