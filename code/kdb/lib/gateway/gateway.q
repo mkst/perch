@@ -37,7 +37,8 @@ process:{[REQ]
     ];
   if[(not known) and (-2#REQ[`request])~0x0300; // likely a LOGON request
     .log.Inf "LOGON request";
-    send[REQ[`handle];0x03];
+    handshake:"x"$0 2 3 6 bin[2.5 2.8 3.0 3.4;.z.K]; // send response based on kdb version
+    send[REQ[`handle];handshake];
     known:1b
     ];
   if[not known;

@@ -1,4 +1,5 @@
 .util.Load `:lib/fix/fix.q;
+.util.Load `:lib/fix/log.q;
 .util.Load `:lib/fix/protocol.q;
 .util.Load `:lib/fix/session.q;
 .util.Load `:lib/fix/on.q;
@@ -29,14 +30,14 @@ Disconnect:{[]
   .log.Inf "Disconnection request";
   // TODO: implement .socket.force_disconect[]
   .fix.IsConnected:0b;
+  delete from `.timer.Timers           // remove heartbeat checking
   };
 
 onMessage:{[MSG]
-  .log.Inf ("In";decode MSG);
+  //.log.Inf ("In";decode MSG);
   .fix.lastReceivedTime:.z.p;
   .fix.lastRawMsg:MSG;
-  // TODO: log message to disk
-  msg:decode MSG;                      // decode message, FIX -> dictionary
+  msg:decode .fix.LogInbound MSG;      // decode message, FIX -> dictionary
   if[not validate msg;                 // quick sanity
     .log.Wrn "Invalid message received"; // ignore invalid messages
     :()                                // NOTE: do not increment sequence number
@@ -68,7 +69,7 @@ onMessage:{[MSG]
     ];
     // TODO: move logic into On.LOGON?
     if["Y"~first msg 141h;             // ResetSeqNum=Y
-      SeqNumIn::SeqNumOut::1;          // reset both in and out sequence numbers
+      SeqNumIn::2;                     // reset inbound sequence number to 2
       `..On.LOGON msg;                 // process logon
       :()
       ];
@@ -79,7 +80,7 @@ onMessage:{[MSG]
       ];
     if[SeqNumIn<msgSeqNum;             // sequence number is higher than expected
       `..On.LOGON msg;                 // process logon
-      `..Send.RESEND_REQUEST map (8h;SeqNumIn;16h;0); // request replay
+      `..Send.RESEND_REQUEST map (7h;SeqNumIn;16h;0); // request replay
       :()
       ];
     // otherwise seq num is too low
@@ -96,7 +97,7 @@ onMessage:{[MSG]
   if[SeqNumIn<msgSeqNum;
     .log.Inf ("Sequence number higher than expected, sending RESEND_REQUEST");
     // NOTE: do not increment sequence number
-    `..Send.RESEND_REQUEST map(8h;SeqNumIn;16h;0); // Request replay
+    `..Send.RESEND_REQUEST map(7h;SeqNumIn;16h;0); // Request replay
     :()
     ];
 

@@ -4,8 +4,8 @@
 send:{[MSG]
   .fix.lastSentMsg: `..s2p MSG;
   .fix.lastSentTime:.z.p;
-  // send down socket
-  .socket.Send MSG;
+  // log and send down socket
+  .socket.Send .fix.LogOutbound MSG;
   // increment outbound sequence number
   .fix.SeqNumOut+:1;
   };
@@ -41,4 +41,8 @@ Send.RESEND_REQUEST:{[MSG]
 // application level
 Send.NEW_ORDER_SINGLE:{[MSG]
   .fix.send[.fix.buildMessage[MSG;.fix.fdr `NEW_ORDER_SINGLE]]
+  };
+
+Send.MARKET_DATA_REQUEST:{[MSG]
+  .fix.send[.fix.buildMessage[MSG;.fix.fdr `MARKET_DATA_REQUEST]]
   };

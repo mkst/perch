@@ -25,7 +25,9 @@ split:{
         x;
         t<0;             // atom?
           string x;
-          " " sv string x
+          t>100;         // function, projection etc
+            " " sv enlist string x;
+            " " sv (),string x
     ]
   };
 

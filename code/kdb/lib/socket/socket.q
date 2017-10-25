@@ -2,16 +2,13 @@
 
 connect:.util.LoadLib[`socket;`k_connect;2];
 send:.util.LoadLib[`socket;`k_send;1];
-mult:.util.LoadLib[`socket;`multiply;2];
 
 disconnect:{
-  // call .z.socketclose
-  .z.sc x
+  .z.sc x       // call .z.socketclose
   };
 
 recv:{
-  // call .z.socketstream
-  .z.ss raze x;
+  .z.ss raze x; // call .z.socketstream
   };
 
 //-----------------

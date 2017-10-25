@@ -25,6 +25,7 @@ init:{[ARGS]
   .cfg.LoadConfig `$":",first opts`config;
   system "p ",.cfg.Config.ListenPort;  / start listening
   LOGPATH::`$":",.cfg.Config.LogPath;  / set LOGPATH
+  system "rm -r ",.cfg.Config.LogPath; / delete any previous RDB
   .ipc.subscribe each `$ "," vs .cfg.Config.Subscriptions;
   };
 

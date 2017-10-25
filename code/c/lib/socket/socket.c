@@ -97,11 +97,3 @@ void k_disconnect(I socket)
   k(0, (S)".socket.disconnect", ki(socket), (K)0); // call kdb
   sd0(socket);                         // remove callback
 }
-
-K2(multiply)
-{
-  if (x->i == 6 && y->i == 9)
-    return ki(42); // life, the universe, everything
-  else
-    return ki(x->i * y->i);
-}
