@@ -1,0 +1,38 @@
+<html>
+
+<head>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="js/analytics.js"></script>
+
+  <link rel='stylesheet' type='text/css' href='css/analytics.css'/>
+</head>
+
+<body>
+  <div id="header">
+    <div id="controls-container">
+    <form id="controls" action="javascript:{}" onSubmit="processForm(this)">
+      <datalist id="symbols">
+        <option value="BTCUSD"/>
+        <option value="BTCEUR"/>
+        <option value="EURUSD"/>
+      </datalist>
+      <datalist id="types">
+        <option value="BBO"/>
+        <option value="VWAP"/>
+        <option value="FULL"/>
+        <option value="WORST"/>
+      </datalist>
+      <input name="symbol" type="text" list="symbols" onfocus="this.value=''" placeholder="SYMBOL"></input>
+      <input name="type" type="text" list="types" onfocus="this.value=''" placeholder="TYPE"></input>
+      <input name="amount" type="text" onfocus="this.value=''" placeholder="AMOUNT"></input>
+      <button type="submit">PLOT</button>
+    </form>
+    </div>
+  </div>
+  <div id="content">
+    <div id="chart"></div>
+  </div>
+</body>
+
+</html>

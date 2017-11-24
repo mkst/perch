@@ -12,6 +12,13 @@ Add:{[FUNC;INTERVAL]
   oid                                  // return id of added job
   };
 
+AddIn:{[FUNC;OFFSET]
+  Timers[id]:(0Nn;.z.p+OFFSET;FUNC);
+  oid:id;
+  id+::1;
+  oid                                  // return id of added job
+  };
+
 GetTimestamp:{[]
   .z.p                                 // return now, allows mocking
   };
@@ -26,6 +33,7 @@ GetTimestamp:{[]
   jobs:select from .timer.Timers where nextRun <= .z.p;
   if[count jobs;
     .timer.execJob each exec function from jobs;
+    delete from `.timer.Timers where id in exec id from jobs where null interval;   / remove one off
     update nextRun:.z.p+interval from `.timer.Timers where id in exec id from jobs
     ];
   };

@@ -8,13 +8,13 @@ snapshot:{[SNAP]
   };
 
 increment:{[INCR]
-  sym:INCR 55h;                                 / Symbol
-  id:INCR 278h;                                 / MDEntryID
-  price:INCR 270h;                              / MDEntryPx
-  qty:INCR 271h;                                / MDEntrySize
+  sym:`$INCR[55h] 0 1 2 4 5 6;                  / remove "/"
+  id:"J"$INCR 278h;                             / MDEntryID
+  price:"F"$INCR 270h;                          / MDEntryPx
+  qty:"F"$INCR 271h;                            / MDEntrySize
   date:INCR 272h;                               / MDEntryDate
   time:INCR 273h;                               / MDEntryTime
-  datetime:"P"$date," ",time;                  / cast date and time to datetime
+  datetime:"P"$date," ",time;                   / cast date and time to datetime
   `timeExch`sym`side`price`qty`id!(datetime;sym;"X";price;qty;id)
   };
 
@@ -42,10 +42,13 @@ On.MARKET_DATA_INCREMENT:{[MSG]
   };
 
 On.MARKET_DATA_REQUEST_REJECT:{[MSG]
-  .log.Wrn "MARKET_DATA_REQUEST_REJECT"
+  .log.Wrn "MARKET_DATA_REQUEST_REJECT";
+  symbol:`$MSG[55h] 0 1 2 4 5 6;
+  .fix.Subscriptions[symbol]:0b;
   };
 
 Subscribe:{[SYMBOL]
+  .fix.Subscriptions[SYMBOL]:1b;
   symbol:string SYMBOL;
   msg:map(262h;symbol;                         /MDReqID
           263h;1;                              /SubscriptionRequestType = 1, Subscribe

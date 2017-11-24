@@ -1,4 +1,4 @@
-Trade:flip `time`timeExch`sym`exch`side`price`qty!"ppsscff"$\:();
+Trade:flip `time`timeExch`sym`exch`side`price`qty`id!"ppsscffj"$\:();
 
 /q)meta Trade
 /c       | t f a
@@ -10,3 +10,4 @@ Trade:flip `time`timeExch`sym`exch`side`price`qty!"ppsscff"$\:();
 /side    | c         / buy or sell
 /price   | f         / price
 /qty     | f         / quantity
+/id      | j         / trade id

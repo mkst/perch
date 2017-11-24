@@ -54,4 +54,4 @@ reconnect:{[]
 
 \d .
 
-.timer.Add[`.ipc.reconnect;0D00:00:10]; // attempt to reconnect every 10 seconds
+.timer.Add[`.ipc.reconnect;0D00:00:03]; // attempt to reconnect every 3 seconds
