@@ -1,6 +1,6 @@
 // On.XXX
 
-On:(enlist `)!(enlist (::));
+On:(`u#enlist `)!(enlist (::));
 
 On.LOGON:{[MSG]
   .log.Inf "LOGON";

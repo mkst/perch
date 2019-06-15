@@ -17,8 +17,12 @@ LoadLib:{[LIB;FUNC;PARAMETERS]
   path 2:(FUNC;PARAMETERS)
   };
 
+/if order.txt is present, files will be loaded in that order
 LoadDir:{[PATH]
-  Load each .Q.dd[PATH] each asc { x where any like[x;] each ("*.k";"*.q") } key makepath PATH
+  lf:$[`order.txt in k:key makepath PATH;
+    `$ { x where not x like "#*" } read0 makepath .Q.dd[PATH;`order.txt];
+    ()];
+  Load each .Q.dd[PATH] each distinct (lf inter k),asc { x where any x like\:/:("*.q";"*.k") } key makepath PATH
   };
 
 Load:{[PATH]

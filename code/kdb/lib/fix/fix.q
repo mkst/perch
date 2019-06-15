@@ -1,15 +1,16 @@
 \d .fix
 
-decode:{(5h$first x)!last x:"I=\001"0:x};
-encode:{raze(string key x){x,"=",$[10h=type y;y;string y],"\001"}'value x};
+SOH:"\001";
+decode:{(5h$first x)!last x:("I=",SOH)0:x};
+encode:{raze(string key x){x,"=",$[10h=type y;y;string y],SOH}'value x};
 
 validate:{ all (8 9 34 35 10h) in key x };
 
 checksum:{-3#"00",string (sum `int$x) mod 256};
-addChecksum:{x,"10=",checksum[x],"\001"};
+addChecksum:{x,"10=",checksum[x],SOH};
 
 bodylength:{string count x};
-addBodylength:{ "9=",bodylength[x],"\001",x };
+addBodylength:{ "9=",bodylength[x],SOH,x };
 
 // split message on tag
 split:{(w cut key x)!'(w:where y=key x) cut value x};
@@ -36,8 +37,8 @@ fromFixSide:map("1";`Buy;
 toFixOrderType:map(`Market;"1";
                    `Limit;"2");
 
-p2s:{ssr[x;"|";"\001"]}; //
-s2p:{ssr[x;"\001";"|"]}; //
+p2s:{ssr[x;"|";SOH]}; //
+s2p:{ssr[x;SOH;"|"]}; //
 
 // performance testing
 // decodes @ ~510k/s

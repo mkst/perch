@@ -1,6 +1,8 @@
 #!/bin/bash
 
-BASE=$(readlink -f $(cd "$( dirname "${BASH_SOURCE[0]}"  )"/.. && pwd))
+BASE=$(readlink -f $(dirname "${BASH_SOURCE[0]}")/..)
+
+echo "BASE is $BASE"
 
 export QHOME=${BASE}/kx
 export PATH=${PATH}:${QHOME}
